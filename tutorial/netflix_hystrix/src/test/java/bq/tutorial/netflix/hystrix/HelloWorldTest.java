@@ -31,6 +31,11 @@ import java.util.concurrent.Future;
 
 import org.junit.Test;
 
+import bq.tutorial.netflix.hystrix.basic.CommandBadHelloWorld;
+import bq.tutorial.netflix.hystrix.basic.CommandBadHelloWorldWithFeedback;
+import bq.tutorial.netflix.hystrix.basic.CommandHelloWorld;
+import bq.tutorial.netflix.hystrix.basic.CommandValuceCahce;
+
 import com.netflix.hystrix.exception.HystrixRuntimeException;
 import com.netflix.hystrix.strategy.concurrency.HystrixRequestContext;
 

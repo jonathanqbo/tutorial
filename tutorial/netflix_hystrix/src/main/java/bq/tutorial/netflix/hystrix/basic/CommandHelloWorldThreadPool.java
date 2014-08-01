@@ -22,10 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package bq.tutorial.netflix.hystrix;
+package bq.tutorial.netflix.hystrix.basic;
 
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
+import com.netflix.hystrix.HystrixCommandKey;
+import com.netflix.hystrix.HystrixThreadPoolKey;
 
 /**
  * <b>  </b>
@@ -34,26 +36,27 @@ import com.netflix.hystrix.HystrixCommandGroupKey;
  *
  * @author Jonathan Q. Bo (jonathan.q.bo@gmail.com)
  *
- * Created at 4:43:06 PM Jul 30, 2014
+ * Created at 4:28:26 PM Jul 30, 2014
  *
  */
 
-public class CommandValuceCahce extends HystrixCommand<Integer>{
+public class CommandHelloWorldThreadPool extends HystrixCommand<String>{
 
-	private int value;
+	private String name;
 	
-	public CommandValuceCahce(int value) {
-		super(HystrixCommandGroupKey.Factory.asKey("CommandValueCache"));
+	public CommandHelloWorldThreadPool(String name){
+		super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("ExampleCommandHelloWorldThreadPool"))
+				.andCommandKey(HystrixCommandKey.Factory.asKey("CommandHelloWorldThreadPool"))
+				.andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey("CommandHelloWorldThreadPool")));
+		
+		this.name = name;
 	}
 	
 	@Override
-	protected Integer run() throws Exception {
-		return value;
+	protected String run() throws Exception {
+		return "Hello " + name;
 	}
 
-	@Override
-	protected String getCacheKey() {
-		return "key-" + value;
-	}
-
+	
+	
 }

@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package bq.tutorial.netflix.hystrix;
+package bq.tutorial.netflix.hystrix.basic;
 
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
@@ -34,25 +34,24 @@ import com.netflix.hystrix.HystrixCommandGroupKey;
  *
  * @author Jonathan Q. Bo (jonathan.q.bo@gmail.com)
  *
- * Created at 3:14:49 PM Jul 29, 2014
+ * Created at 4:16:42 PM Jul 30, 2014
  *
  */
 
-public class CommandHelloWorld extends HystrixCommand<String>{
+public class CommandBadHelloWorldWithFeedback extends HystrixCommand<String>{
 
-	private String name;
+	public CommandBadHelloWorldWithFeedback(){
+		super(HystrixCommandGroupKey.Factory.asKey("GroupKeyBadHelloWorldWithFeedback"));
+	}
 	
-	public CommandHelloWorld(String name) {
-		super(HystrixCommandGroupKey.Factory.asKey("GroupKeyHelloWorld"));
-		
-		this.name = name;
+	@Override
+	protected String run() throws Exception {
+		throw new Exception("bad request!");
 	}
 
 	@Override
-	protected String run() throws Exception {
-		return "Hello " + name;
+	protected String getFallback() {
+		return "Bad request";
 	}
 
-	
-	
 }

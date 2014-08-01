@@ -22,12 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package bq.tutorial.netflix.hystrix;
+package bq.tutorial.netflix.hystrix.basic;
 
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
-import com.netflix.hystrix.HystrixCommandKey;
-import com.netflix.hystrix.HystrixThreadPoolKey;
 
 /**
  * <b>  </b>
@@ -36,27 +34,19 @@ import com.netflix.hystrix.HystrixThreadPoolKey;
  *
  * @author Jonathan Q. Bo (jonathan.q.bo@gmail.com)
  *
- * Created at 4:28:26 PM Jul 30, 2014
+ * Created at 3:02:48 PM Jul 30, 2014
  *
  */
 
-public class CommandHelloWorldThreadPool extends HystrixCommand<String>{
+public class CommandBadHelloWorld extends HystrixCommand<String>{
 
-	private String name;
-	
-	public CommandHelloWorldThreadPool(String name){
-		super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("ExampleCommandHelloWorldThreadPool"))
-				.andCommandKey(HystrixCommandKey.Factory.asKey("CommandHelloWorldThreadPool"))
-				.andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey("CommandHelloWorldThreadPool")));
-		
-		this.name = name;
+	public CommandBadHelloWorld(){
+		super(HystrixCommandGroupKey.Factory.asKey("GroupKeyBadHelloWorld"));
 	}
 	
 	@Override
 	protected String run() throws Exception {
-		return "Hello " + name;
+		throw new Exception("bad request!");
 	}
 
-	
-	
 }
