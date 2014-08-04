@@ -46,7 +46,7 @@ import rx.functions.Action1;
 /**
  * <b>  </b>
  *
- * <p> </p>
+ * <p> Note: each command instance can only be executed once! </p>
  *
  * @author Jonathan Q. Bo (jonathan.q.bo@gmail.com)
  *

@@ -22,15 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package bq.tutorial.netflix.hystrix.mvc;
+package bq.tutorial.netflix.hystrix.basic.threadpool;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import bq.tutorial.netflix.hystrix.basic.CommandHelloWorld;
-import bq.tutorial.netflix.hystrix.status.CommandStatus;
+import org.junit.Test;
 
 /**
  * <b>  </b>
@@ -39,25 +33,22 @@ import bq.tutorial.netflix.hystrix.status.CommandStatus;
  *
  * @author Jonathan Q. Bo (jonathan.q.bo@gmail.com)
  *
- * Created at 2:03:57 PM Aug 1, 2014
+ * Created at 9:29:47 AM Aug 4, 2014
  *
  */
 
-@Controller
-public class HelloWorldController {
-
-	@RequestMapping(value="/helloworld", method=RequestMethod.GET)
-	public @ResponseBody String helloworld(){
-		
-		String blessing = new CommandHelloWorld("Jonathan").execute();
-		
-		return blessing;
-	}
+public class ThreadPoolTest {
 	
-	@RequestMapping(value="/pressure", method=RequestMethod.GET)
-	public @ResponseBody String pressureTest(){
-		String result = new CommandStatus(0.8f, 0.8f, 50, 2).execute();
-		return result;
+	/**
+	 * different command (with different command key) share same threadpool (with same threadpoll key)
+	 */
+	@Test
+	public void testUseSameThreadPool(){
+		CommandThreadpool1 command1 = new CommandThreadpool1("Jonathan");
+		CommandThreadpool2 command2 = new CommandThreadpool2("Bo");
+		
+		command1.execute();
+		command2.execute();
 	}
 	
 }

@@ -22,15 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package bq.tutorial.netflix.hystrix.mvc;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import bq.tutorial.netflix.hystrix.basic.CommandHelloWorld;
-import bq.tutorial.netflix.hystrix.status.CommandStatus;
+package bq.tutorial.netflix.hystrix.dynamic;
 
 /**
  * <b>  </b>
@@ -39,25 +31,9 @@ import bq.tutorial.netflix.hystrix.status.CommandStatus;
  *
  * @author Jonathan Q. Bo (jonathan.q.bo@gmail.com)
  *
- * Created at 2:03:57 PM Aug 1, 2014
+ * Created at 11:18:24 AM Aug 4, 2014
  *
  */
+public class DynamicCommandTest {
 
-@Controller
-public class HelloWorldController {
-
-	@RequestMapping(value="/helloworld", method=RequestMethod.GET)
-	public @ResponseBody String helloworld(){
-		
-		String blessing = new CommandHelloWorld("Jonathan").execute();
-		
-		return blessing;
-	}
-	
-	@RequestMapping(value="/pressure", method=RequestMethod.GET)
-	public @ResponseBody String pressureTest(){
-		String result = new CommandStatus(0.8f, 0.8f, 50, 2).execute();
-		return result;
-	}
-	
 }

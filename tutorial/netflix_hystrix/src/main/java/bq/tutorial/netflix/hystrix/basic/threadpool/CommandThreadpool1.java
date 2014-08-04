@@ -22,15 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package bq.tutorial.netflix.hystrix.mvc;
+package bq.tutorial.netflix.hystrix.basic.threadpool;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import bq.tutorial.netflix.hystrix.basic.CommandHelloWorld;
-import bq.tutorial.netflix.hystrix.status.CommandStatus;
+import com.netflix.hystrix.HystrixCommand;
+import com.netflix.hystrix.HystrixCommandGroupKey;
+import com.netflix.hystrix.HystrixCommandKey;
+import com.netflix.hystrix.HystrixCommandProperties;
+import com.netflix.hystrix.HystrixThreadPoolKey;
 
 /**
  * <b>  </b>
@@ -39,25 +37,34 @@ import bq.tutorial.netflix.hystrix.status.CommandStatus;
  *
  * @author Jonathan Q. Bo (jonathan.q.bo@gmail.com)
  *
- * Created at 2:03:57 PM Aug 1, 2014
+ * Created at 9:26:13 AM Aug 4, 2014
  *
  */
+public class CommandThreadpool1 extends HystrixCommand<String>{
 
-@Controller
-public class HelloWorldController {
-
-	@RequestMapping(value="/helloworld", method=RequestMethod.GET)
-	public @ResponseBody String helloworld(){
+	private String name;
+	
+	public CommandThreadpool1(String name){
+		super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("GroupThread"))
+				.andCommandKey(HystrixCommandKey.Factory.asKey("CommandThread1"))
+				.andCommandPropertiesDefaults(HystrixCommandProperties.Setter().withExecutionIsolationThreadTimeoutInMilliseconds(10000))
+				.andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey("ThreadpoolTest"))
+				);
 		
-		String blessing = new CommandHelloWorld("Jonathan").execute();
 		
-		return blessing;
+		this.name = name;
 	}
 	
-	@RequestMapping(value="/pressure", method=RequestMethod.GET)
-	public @ResponseBody String pressureTest(){
-		String result = new CommandStatus(0.8f, 0.8f, 50, 2).execute();
-		return result;
+	@Override
+	protected String run() throws Exception {
+		System.out.println(Thread.currentThread().getName() + "-" + Thread.currentThread().getId());
+		
+		try {
+			Thread.sleep(8000);
+		} catch (InterruptedException e) {
+		}
+		
+		return "Hello " + name;
 	}
 	
 }

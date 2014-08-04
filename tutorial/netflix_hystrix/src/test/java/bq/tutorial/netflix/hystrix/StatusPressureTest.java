@@ -22,15 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package bq.tutorial.netflix.hystrix.mvc;
+package bq.tutorial.netflix.hystrix;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import bq.tutorial.netflix.hystrix.basic.CommandHelloWorld;
-import bq.tutorial.netflix.hystrix.status.CommandStatus;
+import org.springframework.web.client.RestTemplate;
+import org.testng.annotations.Test;
 
 /**
  * <b>  </b>
@@ -39,25 +34,30 @@ import bq.tutorial.netflix.hystrix.status.CommandStatus;
  *
  * @author Jonathan Q. Bo (jonathan.q.bo@gmail.com)
  *
- * Created at 2:03:57 PM Aug 1, 2014
+ * Created at 4:42:53 PM Aug 1, 2014
  *
  */
 
-@Controller
-public class HelloWorldController {
+public class StatusPressureTest {
 
-	@RequestMapping(value="/helloworld", method=RequestMethod.GET)
-	public @ResponseBody String helloworld(){
-		
-		String blessing = new CommandHelloWorld("Jonathan").execute();
-		
-		return blessing;
+	/**
+	 * more test thread pool size than command thread pool, to cause many rejected error
+	 */
+	@Test(invocationCount=2000, threadPoolSize=20)
+	public void testStatusRejected(){
+		RestTemplate client = new RestTemplate();
+		String result = client.getForObject("http://localhost:8080/netflix_hystrix/mvc/pressure", String.class);
+		System.out.println(result);
 	}
 	
-	@RequestMapping(value="/pressure", method=RequestMethod.GET)
-	public @ResponseBody String pressureTest(){
-		String result = new CommandStatus(0.8f, 0.8f, 50, 2).execute();
-		return result;
+	/**
+	 * less test thread pool size, to avoid service rejected error and make shortcircuit error
+	 */
+	@Test(invocationCount=2000, threadPoolSize=5)
+	public void testStatusCircuited(){
+		RestTemplate client = new RestTemplate();
+		String result = client.getForObject("http://localhost:8080/netflix_hystrix/mvc/pressure", String.class);
+		System.out.println(result);
 	}
 	
 }
