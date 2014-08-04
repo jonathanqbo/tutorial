@@ -12,6 +12,7 @@ local.properties
 .loadpath
 *.classpath
 *.project
+test-output/
 
 # External tool builders
 .externalToolBuilders/

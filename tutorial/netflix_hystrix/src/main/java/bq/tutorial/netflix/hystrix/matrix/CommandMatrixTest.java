@@ -33,7 +33,9 @@ import com.netflix.hystrix.HystrixCommandMetrics;
 /**
  * <b>  </b>
  *
- * <p> Note: Metrics info is not realtime, is refreshed in interval !! </p>
+ * <p> Note: Metrics info is not realtime, is refreshed in interval !! 
+ * can be configured in command properties
+ * </p>
  *
  * @author Jonathan Q. Bo (jonathan.q.bo@gmail.com)
  *
