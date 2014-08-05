@@ -27,9 +27,11 @@ package bq.tutorial.netflix.hystrix.mvc;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import bq.tutorial.netflix.hystrix.basic.CommandHelloWorld;
+import bq.tutorial.netflix.hystrix.dynamic.CommandDynamic;
 import bq.tutorial.netflix.hystrix.status.CommandStatus;
 
 /**
@@ -60,4 +62,9 @@ public class HelloWorldController {
 		return result;
 	}
 	
+	@RequestMapping(value="/dynamic", method=RequestMethod.GET)
+	public @ResponseBody String dynamicTest(@RequestParam String name, @RequestParam float failPercent, @RequestParam float timeoutPercent, @RequestParam int percentToBreakCircuit){
+		String result = new CommandDynamic(name, failPercent, timeoutPercent, percentToBreakCircuit).execute();
+		return result;
+	}
 }

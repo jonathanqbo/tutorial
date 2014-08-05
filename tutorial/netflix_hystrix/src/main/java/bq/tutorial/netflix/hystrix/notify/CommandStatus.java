@@ -22,35 +22,44 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package bq.tutorial.netflix.hystrix.dynamic;
+package bq.tutorial.netflix.hystrix.notify;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
 import com.netflix.hystrix.HystrixCommandProperties;
 import com.netflix.hystrix.HystrixThreadPoolKey;
-import com.netflix.hystrix.HystrixThreadPoolProperties;
 import com.netflix.hystrix.HystrixCommandProperties.ExecutionIsolationStrategy;
+import com.netflix.hystrix.HystrixThreadPoolProperties;
 
 /**
  * <b>  </b>
  *
- * <p> </p>
+ * <p>  </p>
  *
  * @author Jonathan Q. Bo (jonathan.q.bo@gmail.com)
  *
- * Created at 11:17:27 AM Aug 4, 2014
+ * Created at 4:17:53 PM Aug 1, 2014
  *
  */
-public class CommandDynamic extends HystrixCommand<String>{
+
+public class CommandStatus extends HystrixCommand<String>{
 
 	private float failPercent;
 	
 	private float timeoutPercent;
 	
-	public CommandDynamic(String name, float failPercent, float timeoutPercent, int percentToBreakCircuit) {
-		super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("GroupStatus"))
-				.andCommandKey(HystrixCommandKey.Factory.asKey(name))
+	private static AtomicInteger rejectedTimes = new AtomicInteger();
+	private static AtomicInteger shortCircuitedTimes = new AtomicInteger();
+	private static AtomicInteger timeoutTimes = new AtomicInteger();
+	private static AtomicInteger fallbackTimes = new AtomicInteger();
+	private static AtomicInteger successTimes = new AtomicInteger();
+	
+	public CommandStatus(float failPercent, float timeoutPercent, int percentToBreakCircuit) {
+		super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("GroupStatusTest"))
+				.andCommandKey(HystrixCommandKey.Factory.asKey("CommandStatus"))
 				.andCommandPropertiesDefaults(HystrixCommandProperties.Setter()
 						.withCircuitBreakerEnabled(true)
 						.withCircuitBreakerErrorThresholdPercentage(percentToBreakCircuit)
@@ -63,7 +72,7 @@ public class CommandDynamic extends HystrixCommand<String>{
 						// set metrics health snapshot refresh interval
 						.withMetricsHealthSnapshotIntervalInMilliseconds(10)
 						)
-				.andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey("ThreadPool" + name))
+				.andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey("ThreadPoolStatus"))
 				.andThreadPoolPropertiesDefaults(HystrixThreadPoolProperties.Setter()
 						.withCoreSize(5)
 						.withQueueSizeRejectionThreshold(5))
@@ -97,25 +106,49 @@ public class CommandDynamic extends HystrixCommand<String>{
             }
         }
         
+        successTimes.incrementAndGet();
 		return "success_value";
 	}
 
 	@Override
 	protected String getFallback() {
 		if(isResponseRejected()){
+			rejectedTimes.incrementAndGet();
 			return "rejected_value";
 		}
 		
 		if(isResponseTimedOut()){
+			timeoutTimes.incrementAndGet();
 			return "timeout_value";
 		}
 		
 		if(isResponseShortCircuited()){
+			shortCircuitedTimes.incrementAndGet();
 			return "shortcircuited_value";
 		}
 		
+		fallbackTimes.incrementAndGet();
 		return "failed_value";
 	}
-	
-}
 
+	public static AtomicInteger getRejectedTimes() {
+		return rejectedTimes;
+	}
+
+	public static AtomicInteger getShortCircuitedTimes() {
+		return shortCircuitedTimes;
+	}
+
+	public static AtomicInteger getTimeoutTimes() {
+		return timeoutTimes;
+	}
+
+	public static AtomicInteger getSuccessTimes() {
+		return successTimes;
+	}
+
+	public static AtomicInteger getFallbackTimes() {
+		return fallbackTimes;
+	}
+
+}

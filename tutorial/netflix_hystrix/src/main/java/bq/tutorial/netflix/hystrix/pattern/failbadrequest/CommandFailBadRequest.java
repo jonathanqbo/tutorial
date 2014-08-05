@@ -22,7 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package bq.tutorial.netflix.hystrix.dynamic;
+package bq.tutorial.netflix.hystrix.pattern.failbadrequest;
+
+import com.netflix.hystrix.HystrixCommand;
+import com.netflix.hystrix.HystrixCommandGroupKey;
+import com.netflix.hystrix.exception.HystrixBadRequestException;
 
 /**
  * <b>  </b>
@@ -31,9 +35,35 @@ package bq.tutorial.netflix.hystrix.dynamic;
  *
  * @author Jonathan Q. Bo (jonathan.q.bo@gmail.com)
  *
- * Created at 11:18:24 AM Aug 4, 2014
+ * Created at 3:24:54 PM Aug 4, 2014
  *
  */
-public class DynamicCommandTest {
+public class CommandFailBadRequest extends HystrixCommand<String>{
+
+	private boolean isFail = false;
+	
+	public CommandFailBadRequest(boolean isFail){
+		super(HystrixCommandGroupKey.Factory.asKey("GroupFailBadRequest"));
+		this.isFail = isFail;
+	}
+	
+	/**
+	 * HystrixBadRequestException will throw to invoker and not trigger fallback
+	 */
+	@Override
+	protected String run() throws Exception {
+		if(isFail)
+			throw new HystrixBadRequestException("Command Bad Request");
+		
+		return "Command Success";
+	}
+
+	@Override
+	protected String getFallback() {
+		// will not execute this code when HystrixBadRequestException occur
+		return null;
+	}
+	
+	
 
 }
