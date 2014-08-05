@@ -6,7 +6,7 @@
   <packaging>pom</packaging>
   <version>0.0.1-SNAPSHOT</version>
   <name>tutorial Maven Webapp</name>
-  <url>http://maven.apache.org</url>
+  <url>jonathan.q.bo@gmail.com</url>
   
   <modules>
   	<module>netflix_hystrix</module>
