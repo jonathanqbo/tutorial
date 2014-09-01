@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appenders>
+		<RollingRandomAccessFile name="RollingRandomAccessFile1"
+			fileName="logs/burst.log" filePattern="logs/$${date:yyyy-MM}/log-%d{MM-dd-yyyy}-%i.log.gz">
+			<BurstFilter level="FATAL" rate="120" maxBurst="1000" onMisMatch="DENY"/>
+			<PatternLayout>
+				<Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<OnStartupTriggeringPolicy />
+				<TimeBasedTriggeringPolicy interval="1"	modulate="true" />
+				<SizeBasedTriggeringPolicy size="200 MB" />
+			</Policies>
+		</RollingRandomAccessFile>
+		<RollingRandomAccessFile name="RollingRandomAccessFile2"
+			fileName="logs/timefilter.log" filePattern="logs/$${date:yyyy-MM}/timefilter-%d{MM-dd-yyyy}-%i.log.gz">
+			<!-- Timezone is UTC -->
+			<TimeFilter start="00:00:00" end="24:00:00" onMatch="ACCEPT" onMismatch="DENY"/>
+			<PatternLayout>
+				<Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<OnStartupTriggeringPolicy />
+				<TimeBasedTriggeringPolicy interval="1"	modulate="true" />
+				<SizeBasedTriggeringPolicy size="200 MB" />
+			</Policies>
+		</RollingRandomAccessFile>
+	</appenders>
+	<loggers>
+		<logger name="timefilter" level="ALL">
+			<AppenderRef ref="RollingRandomAccessFile2" />
+		</logger>
+		<logger name="brustfilter" level="ALL">
+			<AppenderRef ref="RollingRandomAccessFile1" />
+		</logger>
+	</loggers>
+</configuration>

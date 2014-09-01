@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <appenders>
+    <!-- 
+    file name pattern means the frequency unit, like day/year/week
+    file postproxy means the archive file type, can be "zip"
+    -->
+    <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="logs/rolling_randomaccessfile.log"
+                 filePattern="logs/$${date:yyyy-MM}/rolling_randomaccessfile-%d{MM-dd-yyyy}-%i.log.gz">
+      <PatternLayout>
+        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+      </PatternLayout>
+      <Policies>
+        <OnStartupTriggeringPolicy />
+        <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+        <SizeBasedTriggeringPolicy size="1 KB"/>
+      </Policies>
+    </RollingRandomAccessFile>
+  </appenders>
+  <loggers>
+    <root level="all">
+      <AppenderRef ref="RollingRandomAccessFile"/>
+    </root>
+  </loggers>
+</configuration>
